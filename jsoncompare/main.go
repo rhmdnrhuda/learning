@@ -1,4 +1,4 @@
-package main
+package jsoncompare
 
 import (
 	"encoding/json"
@@ -6,61 +6,53 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
+func init() {
+	// Generate sample files before running benchmarks
+	generateSampleFiles()
+}
+
 type SmallStruct struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID   int    `jsoncompare:"id"`
+	Name string `jsoncompare:"name"`
 }
 
 type MediumStruct struct {
-	ID        int      `json:"id"`
-	Name      string   `json:"name"`
-	Email     string   `json:"email"`
-	Age       int      `json:"age"`
-	Active    bool     `json:"active"`
-	CreatedAt string   `json:"created_at"`
-	Tags      []string `json:"tags"`
+	ID        int      `jsoncompare:"id"`
+	Name      string   `jsoncompare:"name"`
+	Email     string   `jsoncompare:"email"`
+	Age       int      `jsoncompare:"age"`
+	Active    bool     `jsoncompare:"active"`
+	CreatedAt string   `jsoncompare:"created_at"`
+	Tags      []string `jsoncompare:"tags"`
 }
 
 type LargeStruct struct {
-	ID        int                    `json:"id"`
-	Name      string                 `json:"name"`
-	Email     string                 `json:"email"`
-	Age       int                    `json:"age"`
-	Active    bool                   `json:"active"`
-	CreatedAt string                 `json:"created_at"`
-	Tags      []string               `json:"tags"`
-	Address   Address                `json:"address"`
-	Friends   []Friend               `json:"friends"`
-	Settings  map[string]interface{} `json:"settings"`
+	ID        int                    `jsoncompare:"id"`
+	Name      string                 `jsoncompare:"name"`
+	Email     string                 `jsoncompare:"email"`
+	Age       int                    `jsoncompare:"age"`
+	Active    bool                   `jsoncompare:"active"`
+	CreatedAt string                 `jsoncompare:"created_at"`
+	Tags      []string               `jsoncompare:"tags"`
+	Address   Address                `jsoncompare:"address"`
+	Friends   []Friend               `jsoncompare:"friends"`
+	Settings  map[string]interface{} `jsoncompare:"settings"`
 }
 
 type Address struct {
-	Street  string `json:"street"`
-	City    string `json:"city"`
-	State   string `json:"state"`
-	Zip     string `json:"zip"`
-	Country string `json:"country"`
+	Street  string `jsoncompare:"street"`
+	City    string `jsoncompare:"city"`
+	State   string `jsoncompare:"state"`
+	Zip     string `jsoncompare:"zip"`
+	Country string `jsoncompare:"country"`
 }
 
 type Friend struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
-
-// Standard library JSON unmarshal function
-func standardJsonUnmarshal(data []byte, v interface{}) error {
-	return json.Unmarshal(data, v)
-}
-
-// JsonIter unmarshal function
-func jsonIterUnmarshal(data []byte, v interface{}) error {
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	return json.Unmarshal(data, v)
+	ID    int    `jsoncompare:"id"`
+	Name  string `jsoncompare:"name"`
+	Email string `jsoncompare:"email"`
 }
 
 // Benchmark function
@@ -89,7 +81,7 @@ func generateSampleFiles() {
 		small = append(small, SmallStruct{ID: i, Name: fmt.Sprintf("Name %d", i)})
 	}
 	smallData, _ := json.Marshal(small)
-	ioutil.WriteFile("small.json", smallData, 0644)
+	ioutil.WriteFile("small.jsoncompare", smallData, 0644)
 
 	// Medium file
 	medium := []MediumStruct{}
@@ -105,7 +97,7 @@ func generateSampleFiles() {
 		})
 	}
 	mediumData, _ := json.Marshal(medium)
-	ioutil.WriteFile("medium.json", mediumData, 0644)
+	ioutil.WriteFile("medium.jsoncompare", mediumData, 0644)
 
 	// Large file
 	large := []LargeStruct{}
@@ -151,7 +143,7 @@ func generateSampleFiles() {
 		})
 	}
 	largeData, _ := json.Marshal(large)
-	ioutil.WriteFile("large.json", largeData, 0644)
+	ioutil.WriteFile("large.jsoncompare", largeData, 0644)
 }
 
 func benchmarkFile(filename string) {
@@ -163,23 +155,23 @@ func benchmarkFile(filename string) {
 	}
 
 	switch filename {
-	case "small.json":
+	case "small.jsoncompare":
 		var standardResult []SmallStruct
 		var jsoniterResult []SmallStruct
-		benchmark("encoding/json", data, &standardResult, standardJsonUnmarshal)
-		benchmark("jsoniter", data, &jsoniterResult, jsonIterUnmarshal)
+		benchmark("encoding/json", data, &standardResult, StandardJsonUnmarshal)
+		benchmark("jsoniter", data, &jsoniterResult, JsonIterUnmarshal)
 
-	case "medium.json":
+	case "medium.jsoncompare":
 		var standardResult []MediumStruct
 		var jsoniterResult []MediumStruct
-		benchmark("encoding/json", data, &standardResult, standardJsonUnmarshal)
-		benchmark("jsoniter", data, &jsoniterResult, jsonIterUnmarshal)
+		benchmark("encoding/json", data, &standardResult, StandardJsonUnmarshal)
+		benchmark("jsoniter", data, &jsoniterResult, JsonIterUnmarshal)
 
-	case "large.json":
+	case "large.jsoncompare":
 		var standardResult []LargeStruct
 		var jsoniterResult []LargeStruct
-		benchmark("encoding/json", data, &standardResult, standardJsonUnmarshal)
-		benchmark("jsoniter", data, &jsoniterResult, jsonIterUnmarshal)
+		benchmark("encoding/json", data, &standardResult, StandardJsonUnmarshal)
+		benchmark("jsoniter", data, &jsoniterResult, JsonIterUnmarshal)
 	}
 }
 
@@ -187,7 +179,7 @@ func main() {
 	fmt.Println("Generating sample JSON files...")
 	generateSampleFiles()
 
-	benchmarkFile("small.json")
-	benchmarkFile("medium.json")
-	benchmarkFile("large.json")
+	benchmarkFile("small.jsoncompare")
+	benchmarkFile("medium.jsoncompare")
+	benchmarkFile("large.jsoncompare")
 }

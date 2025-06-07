@@ -1,22 +1,16 @@
-package main
+package jsoncompare
 
 import (
 	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 	"os"
 	"testing"
-
-	jsoniter "github.com/json-iterator/go"
 )
 
-func init() {
-	// Generate sample files before running benchmarks
-	generateSampleFiles()
-}
-
 func BenchmarkStandardJSON_SmallFile(b *testing.B) {
-	data, err := os.ReadFile("small.json")
+	data, err := os.ReadFile("small.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read small.json: %v", err)
+		b.Fatalf("Failed to read small.jsoncompare: %v", err)
 	}
 
 	b.ResetTimer()
@@ -29,9 +23,9 @@ func BenchmarkStandardJSON_SmallFile(b *testing.B) {
 }
 
 func BenchmarkJsonIter_SmallFile(b *testing.B) {
-	data, err := os.ReadFile("small.json")
+	data, err := os.ReadFile("small.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read small.json: %v", err)
+		b.Fatalf("Failed to read small.jsoncompare: %v", err)
 	}
 
 	var jsonIter = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -45,9 +39,9 @@ func BenchmarkJsonIter_SmallFile(b *testing.B) {
 }
 
 func BenchmarkStandardJSON_MediumFile(b *testing.B) {
-	data, err := os.ReadFile("medium.json")
+	data, err := os.ReadFile("medium.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read medium.json: %v", err)
+		b.Fatalf("Failed to read medium.jsoncompare: %v", err)
 	}
 
 	b.ResetTimer()
@@ -60,9 +54,9 @@ func BenchmarkStandardJSON_MediumFile(b *testing.B) {
 }
 
 func BenchmarkJsonIter_MediumFile(b *testing.B) {
-	data, err := os.ReadFile("medium.json")
+	data, err := os.ReadFile("medium.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read medium.json: %v", err)
+		b.Fatalf("Failed to read medium.jsoncompare: %v", err)
 	}
 
 	var jsonIter = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -76,9 +70,9 @@ func BenchmarkJsonIter_MediumFile(b *testing.B) {
 }
 
 func BenchmarkStandardJSON_LargeFile(b *testing.B) {
-	data, err := os.ReadFile("large.json")
+	data, err := os.ReadFile("large.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read large.json: %v", err)
+		b.Fatalf("Failed to read large.jsoncompare: %v", err)
 	}
 
 	b.ResetTimer()
@@ -91,9 +85,9 @@ func BenchmarkStandardJSON_LargeFile(b *testing.B) {
 }
 
 func BenchmarkJsonIter_LargeFile(b *testing.B) {
-	data, err := os.ReadFile("large.json")
+	data, err := os.ReadFile("large.jsoncompare")
 	if err != nil {
-		b.Fatalf("Failed to read large.json: %v", err)
+		b.Fatalf("Failed to read large.jsoncompare: %v", err)
 	}
 
 	var jsonIter = jsoniter.ConfigCompatibleWithStandardLibrary
